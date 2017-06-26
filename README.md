@@ -15,23 +15,29 @@ MNIST Dataset hosted on [Yann LeCun's website](http://yann.lecun.com/exdb/mnist/
 
 ## Instructions
 Training the Classical DNN Model  
+
 `python robust_classifier.py -train y`
 
 Testing the Classical DNN Model against MNIST Dataset  
+
 `python robust_classifier.py -test y`
 
 Testing the Classical DNN Model against the Generated Image  
+
 `python robust_classifier.py -rd /model -pd /data -test y -gen y`
 
 Training the Robust Classfier using Wasserstein GAN  
+
 `python robust_classifier.py -m wgan -train y -e 30000`
 
 The GAN is quickly able to create near to original image in 20000 epochs. But to get a better image generation the epochs can be taken as 30000
 
 Generate images using saved model, assuming that the model is saved in "/input" directory  
+
 `python robust_classifier.py -m wgan -rd /input -pd /input -gen y`
 
 Testing the Robust Classifier against the Generated Image  
+
 `python robust_classifier.py -m wgan -rd /model -pd /data -test y -gen y`  
 
 The arguments used by the program are as follows  
@@ -49,6 +55,8 @@ The arguments used by the program are as follows
 
 ## Images generated
 The image generated after final training of the GAN Model.
+
 <img src="images/sample_final.png" title="Final Image Generated">
+
 It is a near to original image generation with conditions on the different classes arragned vertically
 
