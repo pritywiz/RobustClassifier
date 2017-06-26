@@ -1,7 +1,0 @@
-.gitignore
-
-*.pyc
-__pycache__
-.floydexpt
-.floydignore
-
