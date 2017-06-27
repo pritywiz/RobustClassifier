@@ -60,3 +60,12 @@ The image generated after final training of the GAN Model.
 
 It is a near to original image generation with conditions on the different classes arragned vertically
 
+## Inspired by
+[Generative adversarial network based adversarial examples generation and defense] (http://cs229.stanford.edu/proj2016/report/LiuXia-AdversarialExamplesGenerationAndDefenseBasedOnGenerativeAdversarialNetwork-report.pdf)  
+by Fei Xia, Ruishan Liu 
+[Github] (https://github.com/fxia22/advGAN)
+
+## Adaptation from
+[Conditional WassersteinGAN with Auxiliary Classifier] (https://github.com/fairytale0011/Conditional-WassersteinGAN)  
+[Improved WGAN] (https://github.com/igul222/improved_wgan_training)  
+[Tensorflow Implementation of Wasserstein GAN (and Improved version in wgan_v2)] (https://github.com/jiamings/wgan)
