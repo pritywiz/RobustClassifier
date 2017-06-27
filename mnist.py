@@ -1,5 +1,6 @@
-
+import numpy as np
 import os
+import random
 import tensorflow as tf
 import time
 
@@ -27,18 +28,20 @@ class DeepNet_MNIST(object):
         self.loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=self.logits, labels=self.label))
 
         # Optimization
-        self.optimizer = tf.train.AdamOptimizer().minimize(self.loss)
+        with tf.variable_scope("mnist") as scope:
+            self.optimizer = tf.train.AdamOptimizer().minimize(self.loss)
 
         # Accuracy
         correct_pred = tf.equal(tf.argmax(self.logits, 1), tf.argmax(self.label, 1))
         self.accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32), name='accuracy')
         self.sess = tf.Session()
+        self.saver = None
 
     def train(self, batch_size=128, epochs=200, log_metrics=False, w_dir = "/output", save_chkp=True):
         self.sess.run(tf.global_variables_initializer())
         start_time = time.time()
 
-        saver = tf.train.Saver()
+        self.saver = tf.train.Saver()
 
         vimages, vlabels = self.input_data("validation")
         vfeed_dict = {self.data: vimages, self.label: vlabels}
@@ -79,16 +82,22 @@ class DeepNet_MNIST(object):
 
         if save_chkp:
             # Save model
-            save_path = saver.save(self.sess, os.path.join(w_dir, "mnist_model.ckpt"))
+            save_path = self.saver.save(self.sess, os.path.join(w_dir, "mnist_model.ckpt"))
             print("Model saved in file: %s" % save_path)
 
-    def test(self, top_n = 5, n_samples = 5, r_dir = '/input', real = True, p_dir="/input", gfilename = "gen_img.p"):
-        saver = tf.train.Saver()
+    def restore(self, r_dir = '/input'):
+        all_vars = tf.global_variables()
+        mnist_vars = [k for k in all_vars if k.name.startswith("mnist")]
+        self.saver = tf.train.Saver(mnist_vars, name="mnist_save")
+
         ckpt = tf.train.get_checkpoint_state(r_dir)
         if ckpt:
             print ("Restoring Model from : " + ckpt.model_checkpoint_path.replace("/output", r_dir))
-            saver.restore(self.sess, ckpt.model_checkpoint_path.replace("/output", r_dir))
+            self.saver.restore(self.sess, ckpt.model_checkpoint_path.replace("/output", r_dir))
             print("Model restored.")
+
+    def test(self, top_n = 5, n_samples = 5, r_dir = '/input', real = True, p_dir="/input", gfilename = "gen_img.p"):
+
         if real:
             test_images, test_labels = self.input_data("test")
         else:
@@ -99,7 +108,7 @@ class DeepNet_MNIST(object):
 
         random_data = list(zip(*random.sample(list(zip(test_images, test_labels)), n_samples)))
 
-        top_predictions = self.sess.run(tf.nn.top_k(tf.nn.softmax(self.cat_real), top_n), feed_dict={self.real_data: random_data[0]})
+        top_predictions = self.sess.run(tf.nn.top_k(tf.nn.softmax(self.logits), top_n), feed_dict={self.data: random_data[0]})
 
         tfeed_dict = {self.data: test_images, self.label: test_labels}
 

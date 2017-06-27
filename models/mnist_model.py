@@ -3,10 +3,10 @@ import numpy as np
 import tensorflow.contrib.layers as ly
 
 class Classifier(object):
-    def __init__(self, model_dim, data_format, label_dim):
+    def __init__(self, name, model_dim, data_format, label_dim):
         self.model_dim   = model_dim
         self.data_format = data_format
-        self.name        = 'classifier'
+        self.name        = name
         self.label_dim   = label_dim
 
     def __call__(self, inputs, reuse=True):

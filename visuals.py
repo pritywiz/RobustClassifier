@@ -2,7 +2,7 @@ import numpy as np
 import os
 
 import matplotlib
-matplotlib.use('Agg')
+#matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 from utils import plot
@@ -10,14 +10,13 @@ from utils import plot
 def visualize_mnist(images, labels, w_dir= "/output"):
     num_classes = labels.shape[1]
     num_images = 5
-    fig = plt.figure(figsize=(16,8))
+    fig = plt.figure(figsize=(8,5))
     for i in range(num_classes):
         index_cur_label = np.where(labels[:, i]==1)[0]
         rand_index = np.random.choice(index_cur_label, size=(num_images))
         image = images[rand_index]
         for j in range(num_images):
             ax = fig.add_subplot(num_images, num_classes, i*num_images + (j+1), xticks=[], yticks=[])
-            ax.margins(0.1, 0.1)
             ax.set_title(i)
             plt.imshow(image[j][0], cmap='gray')
     plt.savefig(os.path.join(w_dir, "mnist_data.png"))
@@ -81,14 +80,14 @@ def plot_histogram(gdata, w_dir = '/output'):
 def display_predictions(images, labels, top_predictions, top_n, w_dir):
     n_classes = labels.shape[1]
 
-    fig, axies = plt.subplots(nrows=images.shape[0], ncols=2)
+    fig, axies = plt.subplots(nrows=images.shape[0], ncols=2, figsize=(12, 6))
     fig.tight_layout()
     fig.suptitle('Softmax Predictions', fontsize=20, y=1.1)
 
     n_predictions = top_n
     margin = 0.05
     ind = np.arange(n_predictions)
-    width = (1. - 2. * margin) / n_predictions
+    width = (2. - 2. * margin) / n_predictions
  
     for image_i, (image, label_id, pred_indicies, pred_values) in enumerate(zip(images, labels, top_predictions.indices, top_predictions.values)):
         correct_name = np.argmax(label_id)
@@ -102,7 +101,14 @@ def display_predictions(images, labels, top_predictions, top_n, w_dir):
         axies[image_i][1].set_yticks(ind + margin)
         axies[image_i][1].set_yticklabels(pred_indicies[::-1])
         axies[image_i][1].set_xticks([0, 0.5, 1.0])
-    plt.savefig(os.path.join(w_dir, "predictios.png"))
+    plt.savefig(os.path.join(w_dir, "predictions.png"))
     plt.show()
 
-
+def test_generated(accuracy, title, w_dir):
+    fig, axs = plt.subplots(nrows=1, ncols=1, figsize=(12, 6))
+    axs.plot(*zip(*sorted(accuracy.items())))
+    axs.set_title(title)
+    axs.set_ylabel("Accuracy")
+    axs.set_xlabel("Epochs")
+    plt.savefig(os.path.join(w_dir, "accuracy.png"))
+    plt.show()

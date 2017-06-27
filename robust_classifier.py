@@ -15,7 +15,7 @@ from utils import sampler as data
 
 def rmnist(r_dir='/input', p_dir = "/input", w_dir = '/output', epochs = 200, train = True, test = True, real = True, gfilename = "gen_img.p"):
     input_data = data.DataSampler()
-    dconv_model= mmodel.Classifier(32, 'NCHW', 10)
+    dconv_model= mmodel.Classifier('mnist_classifier', 32, 'NCHW', 10)
     deepnet = mnist.DeepNet_MNIST(dconv_model, input_data)
     if args.train:
         deepnet.train(log_metrics=True, w_dir = w_dir, epochs=epochs)
@@ -30,7 +30,7 @@ def cwgan(r_dir='/input', w_dir = '/output', epochs = 20000, train = True, test 
                   gfilename = "gen_img.p"):
     disc_model = model.Discriminator(model_dim = 64, data_format = 'NCHW')
     gen_model  = model.Generator(noise_dim = 128, model_dim = 64, channel = 1, data_format = 'NCHW')
-    dconv_model= mmodel.Classifier(model_dim = 32, data_format = 'NCHW', label_dim = 10)
+    dconv_model= mmodel.Classifier('classifier', model_dim = 32, data_format = 'NCHW', label_dim = 10)
     input_data = data.DataSampler()
     noise      = data.NoiseSampler()
     wgan       = cond_wgan.WassersteinGAN(gen_model, disc_model, dconv_model, input_data, noise)

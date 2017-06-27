@@ -13,6 +13,7 @@ from models import gan_model as model
 from models import mnist_model as mmodel
 
 from utils import log
+from utils import util
 from utils import sampler as data
 
 class WassersteinGAN(object):
@@ -78,11 +79,12 @@ class WassersteinGAN(object):
                 .minimize(self.loss_c, var_list=self.c_model.vars)
 
         self.sess = tf.Session()
+        self.saver = None
 
     def train(self, batch_size=64, epochs=1000000, log_metrics=False, w_dir = "/output", save_chkp=True):
 
         self.sess.run(tf.global_variables_initializer())
-        saver = tf.train.Saver()
+        self.saver = tf.train.Saver()
 
         start_time = time.time()
         plot_data = {"d_loss": 0.0, "g_loss": 0.0, "c_loss_r": 0.0, "c_loss_f":0.0}
@@ -147,7 +149,7 @@ class WassersteinGAN(object):
                 print(log_data)
 
             if i % 1000 == 999 and save_chkp == True:
-                save_path = saver.save(self.sess, os.path.join(w_dir, "wgan_model.ckpt"), global_step=i)
+                save_path = self.saver.save(self.sess, os.path.join(w_dir, "wgan_model.ckpt"), global_step=i)
                 print("Model saved in file: {}".format(save_path))
                 self.generate(from_chk = False, batch_size=16, save_img = True, w_dir = w_dir, step = i)
                 print("Image Generated")
@@ -163,15 +165,9 @@ class WassersteinGAN(object):
     def generate(self, from_chk = True, batch_size=64, save_img = True, r_dir = "/input", w_dir = "/output", step = None):
 
         if from_chk:
-            saver = tf.train.Saver()
-            ckpt  = tf.train.get_checkpoint_state(r_dir)
-            if ckpt:
-                print ("Restoring Model from : " + ckpt.model_checkpoint_path.replace("/output", r_dir))
-                saver.restore(self.sess, ckpt.model_checkpoint_path.replace("/output", r_dir))
-                print("Model restored.")
+            self.restore(r_dir)
 
-
-        gen_data = {"images":[], "clabels":[], "glabels":[], "dlabels":[]}
+        gen_data = None
         if save_img:
             gen_image = np.zeros((self.image_dim * batch_size, self.image_dim * self.label_dim, self.channel))
 
@@ -184,20 +180,25 @@ class WassersteinGAN(object):
             label_f = np.zeros((batch_size, self.label_dim))
             label_f[:, i] = 1
 
-            output, predictc, predictd = self.sess.run([tf.transpose(self.fake_data, (0, 2, 3, 1)), 
+            output, logitsc, logitsd = self.sess.run([tf.transpose(self.fake_data, (0, 2, 3, 1)), 
                                                       self.cat_fake, self.disc_fake], 
                                             feed_dict={self.fake_input: batch_noise, self.fake_label: label_f})
 
+            predictc = np.argmax(logitsc, 1)
+            predictd = util.sigmoid(logitsd)
+            clabels = np.array([class_one_hot[v] for v in predictc])
 
             if save_img:
                 dim = self.image_dim
                 gen_image[:, dim*i:dim*(i+1), :] = np.reshape(output, (batch_size * dim, dim, self.channel))
 
-            for j in range(batch_size):
-                gen_data["images"].append(output[j])
-                gen_data["clabels"].append(np.argmax(predictc[j]))
-                gen_data["glabels"].append(class_one_hot[i])
-                gen_data["dlabels"].append(predictd[j])
+            if gen_data is None:
+                gen_data = {"images":output, "clabels":clabels, "glabels":label_f, "dlabels":predictd}
+            else:
+                gen_data["images"]  = np.append(gen_data["images"], output, axis = 0)
+                gen_data["clabels"] = np.append(gen_data["clabels"], clabels, axis = 0)
+                gen_data["glabels"] = np.append(gen_data["glabels"], label_f, axis = 0)
+                gen_data["dlabels"] = np.append(gen_data["dlabels"], predictd, axis = 0)
 
         if save_img:
             gen_image = ((gen_image / 2 + 0.5)*255).astype(np.uint8)
@@ -208,13 +209,18 @@ class WassersteinGAN(object):
             dump_file = "gen_img-{}.p".format(step)
         pickle.dump(gen_data, open(os.path.join(w_dir, dump_file), "wb" ) )
 
-    def test(self, top_n = 5, n_samples = 5, r_dir = '/input', p_dir = '/input', real = True, gfilename = "gen_img.p"):
-        saver = tf.train.Saver()
+    def restore(self, r_dir = '/input'):
+        all_vars = tf.global_variables()
+        wgan_vars = [k for k in all_vars if not k.name.startswith("mnist")]
+        self.saver = tf.train.Saver(wgan_vars)
+
         ckpt = tf.train.get_checkpoint_state(r_dir)
         if ckpt:
             print ("Restoring Model from : " + ckpt.model_checkpoint_path.replace("/output", r_dir))
-            saver.restore(self.sess, ckpt.model_checkpoint_path.replace("/output", r_dir))
+            self.saver.restore(self.sess, ckpt.model_checkpoint_path.replace("/output", r_dir))
             print("Model restored.")
+
+    def test(self, top_n = 5, n_samples = 5, r_dir = '/input', p_dir = '/input', real = True, gfilename = "gen_img.p"):
 
         if real:
             test_images, test_labels = self.input_data("test")
