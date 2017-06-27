@@ -69,3 +69,10 @@ by Fei Xia, Ruishan Liu
 [Conditional WassersteinGAN with Auxiliary Classifier] (https://github.com/fairytale0011/Conditional-WassersteinGAN)  
 [Improved WGAN] (https://github.com/igul222/improved_wgan_training)  
 [Tensorflow Implementation of Wasserstein GAN (and Improved version in wgan_v2)] (https://github.com/jiamings/wgan)
+
+## Trained Model logs and output links
+[Classic Classifier Training log Link] (https://www.floydhub.com/api/v1/resources/wqnQUj8EoHEjmxUL2bWcGB?content=true)  
+[Classic Classifier Output Link] (https://www.floydhub.com/api/v1/resources/cLgd79j9zEZJA7mWpQAJi6?content=true)   
+[Robust Classifier Training log Link] (https://www.floydhub.com/api/v1/resources/Sng42B849k7f8rYffqqZRg?content=true)  
+[Robust Classifier Output log Link] (https://www.floydhub.com/api/v1/resources/sPf4j6aJdUoHBvjpn6QVcR?content=true)  
+
