@@ -61,18 +61,18 @@ The image generated after final training of the GAN Model.
 It is a near to original image generation with conditions on the different classes arragned vertically
 
 ## Inspired by
-[Generative adversarial network based adversarial examples generation and defense] (http://cs229.stanford.edu/proj2016/report/LiuXia-AdversarialExamplesGenerationAndDefenseBasedOnGenerativeAdversarialNetwork-report.pdf)  
+[Generative adversarial network based adversarial examples generation and defense](http://cs229.stanford.edu/proj2016/report/LiuXia-AdversarialExamplesGenerationAndDefenseBasedOnGenerativeAdversarialNetwork-report.pdf)  
 by Fei Xia, Ruishan Liu 
-[Github] (https://github.com/fxia22/advGAN)
+[Github](https://github.com/fxia22/advGAN)
 
 ## Adaptation from
-[Conditional WassersteinGAN with Auxiliary Classifier] (https://github.com/fairytale0011/Conditional-WassersteinGAN)  
-[Improved WGAN] (https://github.com/igul222/improved_wgan_training)  
-[Tensorflow Implementation of Wasserstein GAN (and Improved version in wgan_v2)] (https://github.com/jiamings/wgan)
+[Conditional WassersteinGAN with Auxiliary Classifier](https://github.com/fairytale0011/Conditional-WassersteinGAN)  
+[Improved WGAN](https://github.com/igul222/improved_wgan_training)  
+[Tensorflow Implementation of Wasserstein GAN (and Improved version in wgan_v2)](https://github.com/jiamings/wgan)
 
 ## Trained Model logs and output links
-[Classic Classifier Training log Link] (https://www.floydhub.com/api/v1/resources/wqnQUj8EoHEjmxUL2bWcGB?content=true)  
-[Classic Classifier Output Link] (https://www.floydhub.com/api/v1/resources/cLgd79j9zEZJA7mWpQAJi6?content=true)   
-[Robust Classifier Training log Link] (https://www.floydhub.com/api/v1/resources/Sng42B849k7f8rYffqqZRg?content=true)  
-[Robust Classifier Output log Link] (https://www.floydhub.com/api/v1/resources/sPf4j6aJdUoHBvjpn6QVcR?content=true)  
+[Classic Classifier Training log Link](https://www.floydhub.com/api/v1/resources/wqnQUj8EoHEjmxUL2bWcGB?content=true)  
+[Classic Classifier Output Link](https://www.floydhub.com/api/v1/resources/cLgd79j9zEZJA7mWpQAJi6?content=true)   
+[Robust Classifier Training log Link](https://www.floydhub.com/api/v1/resources/Sng42B849k7f8rYffqqZRg?content=true)  
+[Robust Classifier Output log Link](https://www.floydhub.com/api/v1/resources/sPf4j6aJdUoHBvjpn6QVcR?content=true)  
 
